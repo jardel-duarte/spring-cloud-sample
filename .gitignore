@@ -125,6 +125,8 @@ desafio-eureka-client/target/**
 desafio-eureka-client/*.iml
 desafio-eureka-server/target/**
 desafio-eureka-server/*.iml
+desafio-eureka-users/target/**
+desafio-eureka-users/*.iml
 .idea/**
 packages/**
 
