@@ -21,10 +21,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
@@ -66,7 +62,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>ConfigServerApplication</mainClass>
+                            <mainClass>com.atlantico.desafio.server.DiscoveryApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

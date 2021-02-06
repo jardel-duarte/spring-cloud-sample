@@ -1,6 +1,6 @@
 spring:
   application:
-    name: users-api
+    name: users
   cloud:
     config:
       uri: http://localhost:9090

@@ -121,12 +121,12 @@ hs_err_pid*
 
 desafio-configuration/target/**
 desafio-configuration/*.iml
-desafio-eureka-client/target/**
-desafio-eureka-client/*.iml
+desafio-zuul/target/**
+desafio-zuul/*.iml
 desafio-eureka-server/target/**
 desafio-eureka-server/*.iml
-desafio-eureka-users/target/**
-desafio-eureka-users/*.iml
+desafio-users/target/**
+desafio-users/*.iml
 .idea/**
 packages/**
 
