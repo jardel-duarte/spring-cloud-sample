@@ -1,4 +1,4 @@
-package com.atlantico.desafio.eureka.serverconfig;
+package com.atlantico.desafio.serverconfig;
 
 
 import org.springframework.boot.SpringApplication;

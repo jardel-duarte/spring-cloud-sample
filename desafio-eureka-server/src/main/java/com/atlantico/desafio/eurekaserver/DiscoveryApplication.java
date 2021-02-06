@@ -1,4 +1,4 @@
-package com.atlantico.desafio.eureka;
+package com.atlantico.desafio.eurekaserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

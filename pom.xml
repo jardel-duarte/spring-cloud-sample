@@ -21,6 +21,7 @@
 		<server-configuration.version>0.0.1</server-configuration.version>
 		<eureka-server.version>0.0.1</eureka-server.version>
 		<eureka-client.version>0.0.1</eureka-client.version>
+		<api-users.version>0.0.1</api-users.version>
 
 		<java.version>1.8</java.version>
 		<spring-core.version>5.0.6.RELEASE</spring-core.version>
@@ -41,7 +42,8 @@
 		<module>desafio-configuration</module>
         <module>desafio-eureka-server</module>
 		<module>desafio-eureka-client</module>
-	</modules>
+        <module>desafio-users</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>

@@ -56,7 +56,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.atlantico.desafio.eureka.serverconfig.ConfigServerApplication</mainClass>
+                            <mainClass>com.atlantico.desafio.serverconfig.ConfigServerApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>
