@@ -1,13 +1,12 @@
 package com.atlantico.desafio.persistence.model.domain;
 
 import com.atlantico.desafio.persistence.model.User;
-import lombok.val;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -19,10 +18,7 @@ public class CustomUserDetails extends User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        val role = this.isAdmin() ? "ADMIN" : "USER";
-        val roles = Collections.singletonList(role);
-
-        return roles.stream()
+        return Stream.of(getRole())
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
                 .collect(toList());
     }

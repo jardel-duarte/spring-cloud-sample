@@ -32,4 +32,13 @@ public class User {
 
     @Column(name = "is_admin", columnDefinition = "boolean default false")
     private boolean admin;
+
+    public Role getRole() {
+        return admin ? Role.ADMIN : Role.USER;
+    }
+
+    public enum Role {
+        USER,
+        ADMIN,
+    }
 }
