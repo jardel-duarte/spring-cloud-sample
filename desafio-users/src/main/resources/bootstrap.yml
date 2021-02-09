@@ -1,6 +1,12 @@
 spring:
   application:
     name: users
+  cloud:
+    config:
+      uri: http://localhost:9090
+      label: master
+      profile: developer
+      enabled: true
   rabbitmq:
     host: localhost
     username: user
