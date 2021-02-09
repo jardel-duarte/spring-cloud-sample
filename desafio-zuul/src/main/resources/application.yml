@@ -1,20 +1,8 @@
 spring:
   application:
     name: zuul
-  redis:
-    host: localhost
-    password:
-    port: 6379
-  session:
-    store-type: redis
-    redis:
-      flush-mode: on_save
-      namespace: spring:session
 server:
   port: 8080
-  servlet:
-    session:
-      timeout: 3600s
 zuul:
   prefix: /api
   routes:
@@ -26,6 +14,9 @@ zuul:
       path: /authenticate/**
       url: http://localhost:8081
       strip-prefix: false
+  trace-request-body: true
+  include-debug-header: true
+  add-proxy-headers: true
 eureka:
   client:
     register-with-eureka: true

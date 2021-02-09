@@ -1,4 +1,4 @@
-package com.atlantico.desafio.proxy.domain;
+package com.atlantico.desafio.users.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

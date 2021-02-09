@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
     public ResponseEntity<?> index() {
         return ResponseEntity.ok("Test");
