@@ -38,7 +38,6 @@ public class UserController {
     @PostMapping("signIn")
     @ResponseBody
     public ResponseEntity<?> signIn(@Valid @RequestBody UserCreateDTO body) {
-
         // TODO: tratar esse tipo de exceção em {ErrorHandler}
         val user = Optional.of(userService.save(body.toUser()))
                 .orElseThrow(() -> new IllegalArgumentException("Tivemos um problema ao salvar o usuário"));
