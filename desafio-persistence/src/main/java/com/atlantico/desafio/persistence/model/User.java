@@ -3,6 +3,9 @@ package com.atlantico.desafio.persistence.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -32,6 +35,14 @@ public class User {
 
     @Column(name = "is_admin", columnDefinition = "boolean default false")
     private boolean admin;
+
+    public void setPassword(String password) {
+        val bCrypt = new BCryptPasswordEncoder(12);
+
+        if (StringUtils.isEmpty(this.password)
+                || (StringUtils.isNotEmpty(this.password) && !bCrypt.matches(password, this.password)))
+            this.password = bCrypt.encode(password);
+    }
 
     public Role getRole() {
         return admin ? Role.ADMIN : Role.USER;

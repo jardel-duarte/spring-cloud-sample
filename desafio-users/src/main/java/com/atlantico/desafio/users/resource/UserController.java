@@ -58,8 +58,7 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
-    public ResponseEntity<?> save(@AuthenticationPrincipal User user,
-                                  @Valid @RequestBody UserCreateDTO body) {
+    public ResponseEntity<?> save(@Valid @RequestBody UserCreateDTO body) {
 
         return Optional.of(userService.save(body.toUser()))
                 .map(UserCreateDTO::new)
@@ -78,10 +77,20 @@ public class UserController {
             throw new AuthorizationServiceException("Did not grants update user, user don't is admin");
         }
 
-        val user = userService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return userService.findById(id)
+                .map(u -> {
+                    if (StringUtils.isNotEmpty(body.getPassword()))
+                        u.setPassword(body.getPassword());
 
-        return ResponseEntity.ok("Update :: " + id);
+                    u.setEmail(body.getEmail());
+                    u.setName(body.getName());
+
+                    return u;
+                })
+                .map(userService::save)
+                .map(UserCreateDTO::new)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
     @GetMapping("{id}")

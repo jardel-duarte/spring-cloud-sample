@@ -30,9 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public <S extends User> S save(S s) {
-        val bCrypt = new BCryptPasswordEncoder(12);
-        s.setPassword(bCrypt.encode(s.getPassword()));
-
         return userRepository.save(s);
     }
 
