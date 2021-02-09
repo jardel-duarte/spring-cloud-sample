@@ -12,11 +12,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -32,17 +31,17 @@ public class AuthenticateController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<?> login(@Valid @RequestBody UserCredentialsDTO user, HttpSession session) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserCredentialsDTO user) {
 
         val token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         val auth= authenticationManager.authenticate(token);
 
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(auth);
-        val key = Base64.getEncoder().encodeToString(session.getId().getBytes());
+        val userToken = Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes());
 
-        redis.opsForHash().putIfAbsent("tokens", key, token.getPrincipal());
+        redis.opsForHash().putIfAbsent("tokens", userToken, token.getPrincipal());
 
-        return ResponseEntity.ok(new HashMap<String, String>(){{put("token", key);}});
+        return ResponseEntity.ok(new HashMap<String, String>(){{put("token", userToken);}});
     }
 }

@@ -2,26 +2,33 @@ package com.atlantico.desafio.users.resource;
 
 import com.atlantico.desafio.persistence.service.UserService;
 import com.atlantico.desafio.users.domain.UserCreateDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
+import static com.atlantico.desafio.users.config.RabbitConfig.queueName;
+import static com.atlantico.desafio.users.config.RabbitConfig.topicExchangeName;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-@CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders={"x-auth-token", "x-requested-with", "x-xsrf-token"})
+@CrossOrigin(origins = "*")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "users", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final RabbitTemplate rabbitTemplate;
+    private final UserService userService;
 
     @PostMapping("signIn")
     @ResponseBody
@@ -65,5 +72,19 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         return ResponseEntity.ok("Test :: " + id);
+    }
+
+    @PostMapping("publish")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    @ResponseBody
+    public ResponseEntity<?> publishEmail(@RequestBody @NotNull String msg) {
+        val properties = new MessageProperties();
+        properties.setContentType(MessageProperties.DEFAULT_CONTENT_TYPE);
+
+        val message = new Message(msg.getBytes(), properties);
+
+        rabbitTemplate.send(topicExchangeName, queueName, message);
+
+        return ResponseEntity.ok("published");
     }
 }
