@@ -11,12 +11,12 @@ zuul:
       url: http://localhost:8081
       strip-prefix: false
     auth:
-      path: /authenticate/**
+      path: /authenticate
       url: http://localhost:8081
-      strip-prefix: false
+      strip-prefix: true
   trace-request-body: true
   include-debug-header: true
-  add-proxy-headers: true
+  sensitive-headers: Cookie,Set-Cookie
 eureka:
   client:
     register-with-eureka: true

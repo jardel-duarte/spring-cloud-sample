@@ -34,9 +34,9 @@ public class AuthServiceRedis {
 
     private Optional<Authentication> lookup(String token) {
         try {
-            String userId = this.redis.opsForValue().get(token);
+            String userId = (String) this.redis.opsForHash().get("tokens", token);
             if (nonNull(userId)) {
-                Authentication authentication = createAuthentication(userId, Role.USER);
+                Authentication authentication = createAuthentication(userId, Role.ADMIN);
                 return Optional.of(authentication);
             }
             return Optional.empty();
@@ -65,7 +65,6 @@ public class AuthServiceRedis {
     }
 
     private static Authentication createAuthentication(String actor, @NonNull Role... roles) {
-        // The difference between `hasAuthority` and `hasRole` is that the latter uses the `ROLE_` prefix
         List<GrantedAuthority> authorities = Stream.of(roles)
                 .distinct()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))

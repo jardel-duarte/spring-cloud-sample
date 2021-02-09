@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import java.util.Base64;
+import java.util.HashMap;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -40,8 +41,8 @@ public class AuthenticateController {
         context.setAuthentication(auth);
         val key = Base64.getEncoder().encodeToString(session.getId().getBytes());
 
-        redis.opsForHash().put("1", key, token.getPrincipal());
+        redis.opsForHash().putIfAbsent("tokens", key, token.getPrincipal());
 
-        return ResponseEntity.ok(key);
+        return ResponseEntity.ok(new HashMap<String, String>(){{put("token", key);}});
     }
 }
