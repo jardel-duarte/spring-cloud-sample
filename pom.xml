@@ -21,6 +21,7 @@
 		<server-configuration.version>0.0.1</server-configuration.version>
 		<eureka-server.version>0.0.1</eureka-server.version>
 		<proxy.version>0.0.1</proxy.version>
+		<persistence.version>0.0.1</persistence.version>
 		<api-users.version>0.0.1</api-users.version>
 
 		<java.version>1.8</java.version>
@@ -43,6 +44,7 @@
         <module>desafio-eureka-server</module>
 		<module>desafio-zuul</module>
 		<module>desafio-users</module>
+		<module>desafio-persistence</module>
 	</modules>
 
 	<dependencyManagement>

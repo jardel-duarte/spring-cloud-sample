@@ -1,5 +1,6 @@
 package com.atlantico.desafio.users.domain;
 
+import com.atlantico.desafio.persistence.model.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Getter
@@ -31,8 +34,10 @@ public class UserCreateDTO implements Serializable {
 
     @NotNull
     @NotBlank
-    @Min(6)
-    @Max(12)
     @JsonProperty("password")
     private String password;
+
+    public User toUser() {
+        return new User(null, this.name, this.email, this.password, false);
+    }
 }

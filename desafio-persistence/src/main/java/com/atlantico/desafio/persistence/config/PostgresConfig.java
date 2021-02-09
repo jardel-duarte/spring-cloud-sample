@@ -1,7 +1,9 @@
-package com.atlantico.desafio.users.config;
+package com.atlantico.desafio.persistence.config;
 
 
+import com.atlantico.desafio.persistence.config.property.PostgresProperty;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,23 +25,29 @@ import java.util.Properties;
 
 @ComponentScan(
         basePackages = {
-                "com.atlantico.desafio.users.model",
-                "com.atlantico.desafio.users.repository",
-                "com.atlantico.desafio.users.service"
+                "com.atlantico.desafio.persistence.model",
+                "com.atlantico.desafio.persistence.repository",
+                "com.atlantico.desafio.persistence.service",
+        },
+        basePackageClasses = {
+                PostgresProperty.class
         }
 )
-@EnableJpaRepositories("com.atlantico.desafio.users.repository")
+@EnableJpaRepositories("com.atlantico.desafio.persistence.repository")
 @EnableTransactionManagement
 @Configuration
 public class PostgresConfig {
 
+    @Autowired
+    private PostgresProperty postgresProperty;
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
-        driver.setDriverClassName("org.postgresql.Driver");
-        driver.setUrl("jdbc:postgresql://localhost:5432/desafio");
-        driver.setUsername("postgres");
-        driver.setPassword("01020304");
+        driver.setDriverClassName(postgresProperty.getDriver());
+        driver.setUrl(postgresProperty.getUrl());
+        driver.setUsername(postgresProperty.getUsername());
+        driver.setPassword(postgresProperty.getPassword());
         return driver;
     }
 
@@ -49,7 +57,7 @@ public class PostgresConfig {
 
         adapter.setDatabasePlatform("PostgreSQLDialect");
         adapter.setDatabase(Database.POSTGRESQL);
-        adapter.setGenerateDdl(false);
+        adapter.setGenerateDdl(true);
 
         return adapter;
     }
@@ -61,13 +69,13 @@ public class PostgresConfig {
 
         factory.setDataSource(dataSource);
         factory.setJpaVendorAdapter(jpaVendorAdapter);
-        factory.setPackagesToScan("com.atlantico.desafio.users.model");
+        factory.setPackagesToScan("com.atlantico.desafio.persistence.model");
         factory.setValidationMode(ValidationMode.NONE);
 
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        jpaProperties.put("hibernate.hbm2ddl.auto", "update");
-        jpaProperties.put("hibernate.show_sql", false);
-        jpaProperties.put("hibernate.format_sql", true);
+        jpaProperties.put("hibernate.dialect", postgresProperty.getHibernate().getDialect());
+        jpaProperties.put("hibernate.hbm2ddl.auto", postgresProperty.getHibernate().getDdlAuto());
+        jpaProperties.put("hibernate.show_sql", postgresProperty.getHibernate().getShowSql());
+        jpaProperties.put("hibernate.format_sql", postgresProperty.getHibernate().getFormatSql());
 
         factory.setJpaProperties(jpaProperties);
         factory.afterPropertiesSet();
