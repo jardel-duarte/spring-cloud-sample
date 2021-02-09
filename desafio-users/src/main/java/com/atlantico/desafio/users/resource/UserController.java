@@ -1,15 +1,20 @@
 package com.atlantico.desafio.users.resource;
 
+import com.atlantico.desafio.persistence.model.User;
 import com.atlantico.desafio.persistence.service.UserService;
 import com.atlantico.desafio.users.domain.UserCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -46,20 +51,37 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
-    public ResponseEntity<?> index() {
-        return ResponseEntity.ok("Test");
+    public ResponseEntity<?> index(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page) {
+        return ResponseEntity.ok(userService.paginate(PageRequest.of(page, 10)));
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
-    public ResponseEntity<?> save() {
-        return ResponseEntity.ok("Test");
+    public ResponseEntity<?> save(@AuthenticationPrincipal User user,
+                                  @Valid @RequestBody UserCreateDTO body) {
+
+        return Optional.of(userService.save(body.toUser()))
+                .map(UserCreateDTO::new)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new IllegalArgumentException("Tivemos um problema ao salvar o usuário"));
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
-    public ResponseEntity<?> update(@PathVariable("id") Long id) {
-        return ResponseEntity.ok("Test :: " + id);
+    public ResponseEntity<?> update(@AuthenticationPrincipal User userCurrent,
+                                    @Valid @RequestBody UserCreateDTO body,
+                                    @PathVariable("id") Long id) {
+
+        if (!userCurrent.getEmail().equals(body.getEmail()) && !userCurrent.isAdmin() && StringUtils.isNotEmpty(body.getPassword())) {
+            throw new AuthorizationServiceException("Did not grants update user, user don't is admin");
+        }
+
+        val user = userService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return ResponseEntity.ok("Update :: " + id);
     }
 
     @GetMapping("{id}")

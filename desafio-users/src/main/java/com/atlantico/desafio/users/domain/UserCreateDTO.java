@@ -37,6 +37,12 @@ public class UserCreateDTO implements Serializable {
     @JsonProperty("password")
     private String password;
 
+    public UserCreateDTO(User user) {
+        this.email = user.getEmail();
+        this.name = user.getName();
+        this.password = user.getPassword();
+    }
+
     public User toUser() {
         return new User(null, this.name, this.email, this.password, false);
     }

@@ -5,6 +5,8 @@ import com.atlantico.desafio.persistence.repository.UserRepository;
 import com.atlantico.desafio.persistence.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +24,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<User> paginate(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
     public <S extends User> S save(S s) {
         val bCrypt = new BCryptPasswordEncoder(12);
-
         s.setPassword(bCrypt.encode(s.getPassword()));
 
         return userRepository.save(s);
