@@ -127,6 +127,8 @@ desafio-eureka-server/target/**
 desafio-eureka-server/*.iml
 desafio-users/target/**
 desafio-users/*.iml
+desafio-persistence/target/**
+desafio-persistence/*.iml
 .idea/**
 packages/**
 
