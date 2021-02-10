@@ -28,6 +28,11 @@ public class UserCreateDTO implements Serializable {
 
     @NotNull
     @NotBlank
+    @JsonProperty("login")
+    private String login;
+
+    @NotNull
+    @NotBlank
     @Email
     @JsonProperty("email")
     private String email;
@@ -44,6 +49,6 @@ public class UserCreateDTO implements Serializable {
     }
 
     public User toUser() {
-        return new User(null, this.name, this.email, this.password, false);
+        return new User(null, this.name, this.login, this.email, this.password, false);
     }
 }

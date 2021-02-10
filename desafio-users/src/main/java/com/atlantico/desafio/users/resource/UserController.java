@@ -46,7 +46,7 @@ public class UserController {
         val user = Optional.of(userService.save(body.toUser()))
                 .orElseThrow(() -> new IllegalArgumentException("Tivemos um problema ao salvar o usuário"));
 
-        val response = new UserCreateDTO(user.getName(), user.getEmail(), null);
+        val response = new UserCreateDTO(user.getName(), user.getLogin(), user.getEmail(), null);
 
         return ResponseEntity.ok(response);
     }

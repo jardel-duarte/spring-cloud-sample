@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 public class CustomUserDetails extends User implements UserDetails {
 
     public CustomUserDetails(final User user) {
-        super(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.isAdmin());
+        super(user.getId(), user.getName(), user.getLogin(), user.getEmail(), user.getPassword(), user.isAdmin());
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CustomUserDetails extends User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return super.getEmail();
+        return super.getLogin();
     }
 
     @Override

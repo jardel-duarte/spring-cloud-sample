@@ -2,12 +2,15 @@ package com.atlantico.desafio.persistence.config;
 
 
 import com.atlantico.desafio.persistence.config.properties.PostgresProperty;
+import com.atlantico.desafio.persistence.domain.AuditorAwareImpl;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -35,6 +38,7 @@ import java.util.Properties;
 )
 @EnableJpaRepositories("com.atlantico.desafio.persistence.repository")
 @EnableTransactionManagement
+@EnableJpaAuditing
 @Configuration
 public class PostgresConfig {
 
@@ -94,5 +98,11 @@ public class PostgresConfig {
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
+
+    @Bean
+    public AuditorAware<String> auditorAware() {
+        return new AuditorAwareImpl();
+    }
+
 
 }

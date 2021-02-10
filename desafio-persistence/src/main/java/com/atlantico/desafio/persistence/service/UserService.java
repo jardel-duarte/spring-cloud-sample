@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UserService extends CrudRepository<User, Long> {
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByLogin(String login);
 
     Page<User> paginate(Pageable pageable);
 }

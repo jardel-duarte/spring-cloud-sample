@@ -16,8 +16,8 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userService.findByEmail(s)
+        return userService.findByLogin(s)
                 .map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Not found user by email"));
+                .orElseThrow(() -> new UsernameNotFoundException("Not found user by login"));
     }
 }

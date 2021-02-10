@@ -4,12 +4,14 @@ import com.atlantico.desafio.persistence.model.User;
 import com.atlantico.desafio.persistence.repository.UserRepository;
 import com.atlantico.desafio.persistence.service.UserService;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,8 +21,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> findByLogin(String login) {
+        return userRepository.findByLogin(login);
     }
 
     @Override
@@ -30,6 +32,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public <S extends User> S save(S s) {
+        val bCrypt = new BCryptPasswordEncoder(12);
+
+        if (Objects.nonNull(s.getId())) {
+            val current = findById(s.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            if (StringUtils.isNotEmpty(s.getPassword()) && !s.getPassword().equals(current.getPassword())
+                    || !bCrypt.matches(s.getPassword(), current.getPassword()))
+                s.setPassword(bCrypt.encode(s.getPassword()));
+        } else {
+            s.setPassword(bCrypt.encode(s.getPassword()));
+        }
+
         return userRepository.save(s);
     }
 
