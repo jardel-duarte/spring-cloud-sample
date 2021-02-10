@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.LinkedHashMap;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static com.atlantico.desafio.users.config.RabbitConfig.queueName;
 import static com.atlantico.desafio.users.config.RabbitConfig.topicExchangeName;
@@ -55,7 +55,16 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
     public ResponseEntity<?> index(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page) {
-        return ResponseEntity.ok(userService.paginate(PageRequest.of(page, 10)));
+        val paginate = userService.paginate(PageRequest.of(page, 10));
+
+        val response = new LinkedHashMap<String, Object>(){{
+            put("data", paginate.getContent());
+            put("total", paginate.getTotalElements());
+            put("page", paginate.getPageable().getPageNumber());
+            put("size", paginate.getPageable().getPageSize());
+        }};
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -118,7 +127,7 @@ public class UserController {
         val message = new Message(msg.getBytes(), properties);
 
 //        rabbitTemplate.send(topicExchangeName, queueName, message);
-        rabbitTemplate.convertAndSend(topicExchangeName, "email.#", message);
+        rabbitTemplate.convertAndSend(topicExchangeName, queueName, message);
         receiver.getLatch().await(1000, MILLISECONDS);
 
         return ResponseEntity.ok("published");
