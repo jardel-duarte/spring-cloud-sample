@@ -2,6 +2,7 @@ package com.atlantico.desafio.users.resource;
 
 import com.atlantico.desafio.persistence.model.User;
 import com.atlantico.desafio.persistence.service.UserService;
+import com.atlantico.desafio.users.domain.Receiver;
 import com.atlantico.desafio.users.domain.UserCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.atlantico.desafio.users.config.RabbitConfig.queueName;
 import static com.atlantico.desafio.users.config.RabbitConfig.topicExchangeName;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -34,6 +37,7 @@ public class UserController {
 
     private final RabbitTemplate rabbitTemplate;
     private final UserService userService;
+    private final Receiver receiver;
 
     @PostMapping("signIn")
     @ResponseBody
@@ -107,13 +111,15 @@ public class UserController {
     @PostMapping("publish")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
-    public ResponseEntity<?> publishEmail(@RequestBody @NotNull String msg) {
+    public ResponseEntity<?> publishEmail(@RequestBody @NotNull String msg) throws InterruptedException {
         val properties = new MessageProperties();
-        properties.setContentType(MessageProperties.DEFAULT_CONTENT_TYPE);
+        properties.setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN);
 
         val message = new Message(msg.getBytes(), properties);
 
-        rabbitTemplate.send(topicExchangeName, queueName, message);
+//        rabbitTemplate.send(topicExchangeName, queueName, message);
+        rabbitTemplate.convertAndSend(topicExchangeName, "email.#", message);
+        receiver.getLatch().await(1000, MILLISECONDS);
 
         return ResponseEntity.ok("published");
     }

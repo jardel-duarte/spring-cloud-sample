@@ -1,5 +1,6 @@
 package com.atlantico.desafio.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class User {
     private String email;
 
     @Column(length = 200)
+    @JsonIgnore
     private String password;
 
     @Column(name = "is_admin", columnDefinition = "boolean default false")
@@ -44,6 +46,7 @@ public class User {
             this.password = bCrypt.encode(password);
     }
 
+    @JsonIgnore
     public Role getRole() {
         return admin ? Role.ADMIN : Role.USER;
     }

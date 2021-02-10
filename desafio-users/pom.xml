@@ -25,7 +25,6 @@
             <groupId>com.atlantico.desafio.cloudsample</groupId>
             <artifactId>desafio-persistence</artifactId>
             <version>${persistence.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

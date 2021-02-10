@@ -1,7 +1,7 @@
 package com.atlantico.desafio.persistence.config;
 
 
-import com.atlantico.desafio.persistence.config.property.PostgresProperty;
+import com.atlantico.desafio.persistence.config.properties.PostgresProperty;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

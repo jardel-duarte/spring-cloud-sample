@@ -1,4 +1,4 @@
-package com.atlantico.desafio.persistence.config.property;
+package com.atlantico.desafio.persistence.config.properties;
 
 import lombok.Getter;
 import lombok.Setter;
