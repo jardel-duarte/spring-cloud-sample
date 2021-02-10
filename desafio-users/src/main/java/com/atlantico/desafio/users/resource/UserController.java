@@ -2,14 +2,13 @@ package com.atlantico.desafio.users.resource;
 
 import com.atlantico.desafio.persistence.model.User;
 import com.atlantico.desafio.persistence.service.UserService;
+import com.atlantico.desafio.users.domain.MessageEmail;
 import com.atlantico.desafio.users.domain.Receiver;
 import com.atlantico.desafio.users.domain.UserCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -117,19 +115,13 @@ public class UserController {
         return ResponseEntity.ok("Test :: " + id);
     }
 
-    @PostMapping("publish")
+    @PostMapping("email")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     @ResponseBody
-    public ResponseEntity<?> publishEmail(@RequestBody @NotNull String msg) throws InterruptedException {
-        val properties = new MessageProperties();
-        properties.setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN);
-
-        val message = new Message(msg.getBytes(), properties);
-
-//        rabbitTemplate.send(topicExchangeName, queueName, message);
+    public ResponseEntity<?> publishEmail(@RequestBody @Valid MessageEmail message) throws InterruptedException {
+        log.info("Sending message...");
         rabbitTemplate.convertAndSend(topicExchangeName, queueName, message);
         receiver.getLatch().await(1000, MILLISECONDS);
-
         return ResponseEntity.ok("published");
     }
 }

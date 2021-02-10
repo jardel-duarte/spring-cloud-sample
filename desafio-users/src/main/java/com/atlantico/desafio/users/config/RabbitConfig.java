@@ -1,6 +1,5 @@
 package com.atlantico.desafio.users.config;
 
-import com.atlantico.desafio.users.domain.Receiver;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -40,10 +39,4 @@ public class RabbitConfig {
         container.setMessageListener(listenerAdapter);
         return container;
     }
-
-    @Bean
-    MessageListenerAdapter listenerAdapter(Receiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
-    }
-
 }
