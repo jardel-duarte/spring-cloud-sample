@@ -9,7 +9,7 @@ import static com.atlantico.desafio.users.config.RabbitConfig.queueName;
 
 @Slf4j
 @Service
-public class RabbitConsumer {
+public class EmailConsumer {
 
     @RabbitListener(queues = queueName)
     public void receiveMessage(final Message message) {
