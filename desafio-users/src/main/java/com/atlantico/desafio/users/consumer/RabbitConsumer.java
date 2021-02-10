@@ -1,16 +1,19 @@
 package com.atlantico.desafio.users.consumer;
 
-import com.atlantico.desafio.users.domain.Receiver;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
 
-@Component
+import static com.atlantico.desafio.users.config.RabbitConfig.queueName;
+
+@Slf4j
+@Service
 public class RabbitConsumer {
 
-    @Bean
-    MessageListenerAdapter listenerAdapter(Receiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+    @RabbitListener(queues = queueName)
+    public void receiveMessage(final Message message) {
+        log.info("Received message as generic: {}", message.toString());
     }
 
 }
